@@ -1,0 +1,8 @@
+{
+	"num_types":50,
+	"num_instances":5000,
+	"num_word_dim":50,
+	"num_type_dim":50,
+	"num_contexts":10,
+	"num_words":20
+}

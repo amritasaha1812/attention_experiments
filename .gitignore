@@ -1,0 +1,16 @@
+attention_real/real_data/*
+attention_real/backup/*
+attention_real/backup2/*
+attention_real/data/*
+attention_real/hierarchical_attention/data/*
+attention_real/model2_copy/*
+attention_real/model3_copy/*
+attention_real/model1/*
+attention_real/model2/*
+attention_real/model3/*
+attention_real/hierarchical_attention/model_top_down/*
+attention_real/hierarchical_attention/model_bottom_up/*
+attention_simulation/model1/*
+attention_simulation/model2/*
+attention_simulation/model3/*
+attention_simulation/data/*.pkl
