@@ -87,8 +87,12 @@ def get_batch_data(data, batch_size):
 	return left_contextids, right_contextids, mention_wordids, mention_labelids, decoder_input, sequence_weights	
 
 if __name__=="__main__":
-	params = json.load(open('params.json'))
-	get_data_dict(params)
-	train_data = pkl.load(open(params['train_data_file_prepro']))
-	batch_size = params['batch_size']
-	get_batch_data(train_data[:batch_size])	 					
+	param = json.load(open(sys.argv[1]))
+	print param
+    	if os.path.exists(param['train_data_file_prepro']) and os.path.exists(param['valid_data_file_prepro']) and os.path.exists(param['test_data_file_prepro']):
+        	print 'preprocessed data already exists'
+	        sys.stdout.flush()
+	else:
+        	get_data_dict(param)
+	        print 'preprocessed the data'
+        	sys.stdout.flush()

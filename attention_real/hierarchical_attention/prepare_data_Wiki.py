@@ -50,16 +50,19 @@ class PrepareDataWiki:
 		with open(filename, 'wb') as f:
 			pkl.dump(obj, f, protocol=pkl.HIGHEST_PROTOCOL)
 
-	def retain_most_specific_labels(self, labels):
-		if isinstance(labels, basestring):
-			labels = [labels]
-		if isinstance(labels, set):
-			labels = list(labels)
-		to_remove = set([''])
-		for index,l in enumerate(labels):
-			if l in labels[:index-1]:
-				to_remove.add(l)
-		return list(set(labels) - to_remove)		
+        def retain_most_specific_labels(self, labels):
+                if isinstance(labels, basestring):
+                       labels = [labels]
+                if isinstance(labels, set):
+                        labels = list(labels)
+                labels = [l.strip('/') for l in labels]
+                labels.sort(lambda x,y: cmp(len(x),len(y)), reverse=True)
+                to_remove = set([''])
+                for index,l in enumerate(labels):
+                        if any([l in x for x in labels[:index]]):
+                                to_remove.add(l)
+                path = list(set(labels) - to_remove)
+                return path
 
 	def create_type_hierarchy(self):
 		#self.types = set(self.retain_most_specific_labels(self.types))
@@ -162,7 +165,7 @@ class PrepareDataWiki:
 				mention_words = tokens[mention_start:mention_end]
 				#self.ent_word_counter.update(mention_words)	
 				mention_labels = []
-				for x in self.retain_most_specific_labels(mention['labels']):
+				for x in mention['labels']:
 					labels = [xi.strip() for xi in x.lower().split("/") if len(xi.strip())>0]
 					if self.type_order=="bottom_up":
                                                 labels = list(reversed(labels))

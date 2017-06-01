@@ -14,3 +14,5 @@ attention_simulation/model1/*
 attention_simulation/model2/*
 attention_simulation/model3/*
 attention_simulation/data/*.pkl
+attention_real/hierarchical_attention/old_models/*
+attention_real/old_models/*

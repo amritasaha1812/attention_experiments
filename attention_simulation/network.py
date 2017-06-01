@@ -7,14 +7,12 @@ import sys
 from tensorflow.python.ops import control_flow_ops
 
 class TypeAttention:
-	CHANGE_OF_VARIABLES = "CHANGE_OF_VARIABLES"
+	CHANGE_OF_VARIABLES_SUM = "CHANGE_OF_VARIABLES_SUM"
+	CHANGE_OF_VARIABLES_MAX = "CHANGE_OF_VARIABLES_MAX"
         STRUCTURED_ATTENTION = "STRUCTURED_ATTENTION"
         STANDARD_ATTENTION = "STANDARD_ATTENTION"
 
 	def __init__(self, num_steps, num_contexts, hidden_size, num_word_dim, num_type_dim, num_types, learning_rate, max_gradient_norm, descs, attention_type):
-		self.CHANGE_OF_VARIABLES = "CHANGE_OF_VARIABLES"
-		self.STRUCTURED_ATTENTION = "STRUCTURED_ATTENTION"
-		self.STANDARD_ATTENTION = "STANDARD_ATTENTION"
 		self.num_steps = num_steps
 		self.num_contexts = num_contexts
 		self.hidden_size = hidden_size
@@ -93,19 +91,21 @@ class TypeAttention:
 		attn = tf.reduce_sum(tf.multiply(attn, self.attn_dec_W),2)
 		attn = attn + self.attn_dec_b
                 #attn is a tensor of dimension (#batch_size * #num_types)
-		if self.attention_type==self.CHANGE_OF_VARIABLES:
+		if self.attention_type==TypeAttention.CHANGE_OF_VARIABLES_MAX or self.attention_type==TypeAttention.CHANGE_OF_VARIABLES_SUM:
 			attn_matrix = tf.expand_dims(attn, axis=1)
 			#attn_matrix is a tensor of dimension (#batch_size * 1 * #num_types)
 			attn_matrix = tf.tile(attn_matrix, [1,self.num_types,1])
 			#attn_matrix is a tensor of dimension (#batch_size * #num_types * #num_types)
 			attn_matrix = tf.multiply(attn_matrix, self.descs)
 			#attn_matrix is a tensor of dimension (#batch_size * #num_types * #num_types)	
-			#V2:attn_matrix = self.softmax_activation(attn_matrix)
-			#V2:attn = attn + tf.reduce_sum(attn_matrix, 2)
-			#V2:#attn is a tensor of dimension (#batch_size * #num_types) 
-			attn_matrix = self.softmax_activation(attn_matrix)
-			attn = attn + tf.reduce_max(attn_matrix, axis=2)
-			#attn is a tensor of dimension (#batch_size * #num_types)
+			if self.attention_type==TypeAttention.CHANGE_OF_VARIABLES_SUM:
+				attn_matrix = self.softmax_activation(attn_matrix)
+				attn = attn + tf.reduce_sum(attn_matrix, 2)
+				#attn is a tensor of dimension (#batch_size * #num_types) 
+			elif self.attention_type==TypeAttention.CHANGE_OF_VARIABLES_MAX:
+				attn_matrix = self.softmax_activation(attn_matrix)
+				attn = attn + tf.reduce_max(attn_matrix, axis=2)
+				#attn is a tensor of dimension (#batch_size * #num_types)
 		attn = self.softmax_activation(attn, dim=1)
                 return attn
 	

@@ -226,11 +226,11 @@ def run_training(param):
 		for epoch in range(param['max_epochs']):
 			random.shuffle(train_data)
 			train_loss = 0
-			if epoch==0:
-				feed_prev = False
-			else:
-				feed_prev = True
 			for i in range(n_batches):
+				if epoch>0 or overall_step_count>100:
+                	                feed_prev = True
+                        	else:
+                                	feed_prev = False	
 				overall_step_count = overall_step_count+1
 				train_batch_dict = train_data[i*param['batch_size']:(i+1)*param['batch_size']]
 				train_batch_loss = perform_training(model, train_batch_dict, feed_prev, param['batch_size'], overall_step_count, param['show_grad_freq'])

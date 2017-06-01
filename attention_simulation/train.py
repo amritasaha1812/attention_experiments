@@ -71,8 +71,10 @@ def run_training(param):
 		os.makedirs(param['model_path'])
 	model_file = os.path.join(param['model_path'],"best_model")
 	attention_type = param['attention_type']
-	if attention_type=="TypeAttention.CHANGE_OF_VARIABLES":
-		attention_type = TypeAttention.CHANGE_OF_VARIABLES
+	if attention_type=="TypeAttention.CHANGE_OF_VARIABLES_MAX":
+		attention_type = TypeAttention.CHANGE_OF_VARIABLES_MAX
+	if attention_type=="TypeAttention.CHANGE_OF_VARIABLES_SUM":
+                attention_type = TypeAttention.CHANGE_OF_VARIABLES_SUM
 	elif attention_type=="TypeAttention.STANDARD_ATTENTION":
 		attention_type = TypeAttention.STANDARD_ATTENTION
 	elif attention_type=="TypeAttention.STRUCTURED_ATTENTION":
